@@ -38,14 +38,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.Date;
-
 
 /**
  *  The {@code StdDraw} class provides a basic capability for
@@ -423,13 +415,22 @@ import java.util.Date;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public final class StdDraw implements ActionListener, MouseListener, MouseMotionListener, KeyListener {
+public final class StdDraw implements ActionListener, MouseListener, MouseMotionListener, KeyListener  {
 	
-static int p=1;
-static int q= Maze1.giveN();
+int p=5;
+int q= 1;
 char Flag = 'A';
-static boolean a= false;
-public static  int [][]position = new int [7][7];
+public static int count = 0;
+public boolean [][]vis= {
+		                 {true, true, true, true, true, true,true},
+		                 {true, true, true, true, true, false,true},
+		                 {true, true, true, true, true, true,true},
+		                 {true, true, true, true, true, true,true},
+		                 {true, true, true, true, true, true,true},
+		                 {true, true, true, true, true, true,true},
+		                 {true, true, true, true, true, true,true}
+		                 };
+
 
 
     /**
@@ -654,7 +655,7 @@ public static  int [][]position = new int [7][7];
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);            // closes all windows
         // frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);      // closes only current window
-        frame.setTitle("Maze Game Server Side");
+        frame.setTitle("Maze Game Client");
         frame.setJMenuBar(createMenuBar());
         frame.pack();
         frame.requestFocusInWindow();
@@ -1730,16 +1731,17 @@ public static  int [][]position = new int [7][7];
     		synchronized (keyLock) {
         	int i=e.getKeyCode();
             keysDown.add(i);
-           // a= changeb(a);
-           // if(a){ 
-           	if(i== KeyEvent.VK_DOWN ){
-           //	System.out.println("Down key pressed");
-            Flag ='D';                   
-            
+           
+			
+		   	if(i== KeyEvent.VK_DOWN ){		   			    	
+         //   System.out.println("Down key pressed");
+            Flag ='D';
+                   
+        	
             } // end if
             else if(i== KeyEvent.VK_UP){
                
-           //     System.out.println("Up key pressed");
+               // System.out.println("Up key pressed");
                 Flag='U';
                           } // end else if
            	
@@ -1756,28 +1758,19 @@ public static  int [][]position = new int [7][7];
             else{
             	System.out.println("Wrong key Pressed");
             }
-            }
-           // else{
-            //	System.out.println("It is not ur turn");
-           // }
-            
-           
-            	
-            
-           	 // end synchronized
-            
-    					
-    		
+           	
+           	} // end synchronized
+                
          /*  */
         
     }// end keypressed
- /*  public void mazeprogramDown(){
+    	/* public void mazeprogramDown(){
     		
-    		boolean [][]south= Maze1.getsouth();
-    		boolean [][]north= Maze1.getnorth();
-    		boolean [][]west= Maze1.getwest();
-    		boolean [][]east= Maze1.geteast();
-               
+    		boolean [][]south= Maze.getsouth();
+    		boolean [][]north= Maze.getnorth();
+    		boolean [][]west= Maze.getwest();
+    		boolean [][]east= Maze.geteast();
+    		          
        for(int p=1;p<2;p++){ 
        for(int q=5;q>0;q--){
        
@@ -1792,7 +1785,6 @@ public static  int [][]position = new int [7][7];
         StdDraw.setPenColor(StdDraw.BLUE);
         StdDraw.filledCircle(p + 0.5, q + 0.5, 0.25);
         StdDraw.show(10);
-       // Maze1.outclient();
         			
         }// end second if
         
@@ -1806,22 +1798,19 @@ public static  int [][]position = new int [7][7];
              	vis[p][q]=false;
              	System.out.println("The value of p & q " + p + q);
              	count++;
-             	Maze1.outclient();
-
-             	
         	} // end else
        }//end if
        else{
     	   System.out.println("Wrong Move : You have hit the Border of maze");
        }
         }//end mazeprogramDown
-   
     
+    	
     	public void mazeprogramRight(){
-    		boolean [][]south= Maze1.getsouth();
-    		boolean [][]north= Maze1.getnorth();
-    		boolean [][]west= Maze1.getwest();
-    		boolean [][]east= Maze1.geteast();
+    		boolean [][]south= Maze.getsouth();
+    		boolean [][]north= Maze.getnorth();
+    		boolean [][]west= Maze.getwest();
+    		boolean [][]east= Maze.geteast();
             
            for(int p=1;p<6;p++){ 
            for(int q=1;q<2;q++){
@@ -1858,10 +1847,10 @@ public static  int [][]position = new int [7][7];
             }//end mazeprogramRight
         
     	public void mazeprogramLeft(){
-    		boolean [][]south= Maze1.getsouth();
-    		boolean [][]north= Maze1.getnorth();
-    		boolean [][]west= Maze1.getwest();
-    		boolean [][]east= Maze1.geteast();
+    		boolean [][]south= Maze.getsouth();
+    		boolean [][]north= Maze.getnorth();
+    		boolean [][]west= Maze.getwest();
+    		boolean [][]east= Maze.geteast();
             
            for(int p=1;p<6;p++){ 
            for(int q=1;q<2;q++){
@@ -1898,10 +1887,10 @@ public static  int [][]position = new int [7][7];
         
         
     	public void mazeprogramUp(){
-    		boolean [][]south= Maze1.getsouth();
-    		boolean [][]north= Maze1.getnorth();
-    		boolean [][]west= Maze1.getwest();
-    		boolean [][]east= Maze1.geteast();
+    		boolean [][]south= Maze.getsouth();
+    		boolean [][]north= Maze.getnorth();
+    		boolean [][]west= Maze.getwest();
+    		boolean [][]east= Maze.geteast();
             
            /*for(int p=1;p<2;p++){ 
            for(int q=1;q<6;q++){
@@ -1911,12 +1900,16 @@ public static  int [][]position = new int [7][7];
            
         //   for(int r=1;r<2;r++){
         	//   for(int z=1;z<6;z++){
-        		//----  System.out.print(vis[1][1]);
+        		//  System.out.print(vis[1][1]);
         	  // }
         	   //System.out.println();
-           //} */
-        		  /*
-           if((q<6)||(q>0)){
+           //}
+    
+    
+          
+          
+           //
+          /* if((q<6)||(q>0)){
             if((north[p][q])||(vis[p][q+1] == false)){
             			
             System.out.println("Wrong move:Please check if you have hit the wall of maze or visited cell");
@@ -1940,35 +1933,37 @@ public static  int [][]position = new int [7][7];
            else{
         	   System.out.println("Wrong Move : You have hit the Border of maze");
            }
-            }//end mazeprogramUp
-        */
+            }//end mazeprogramUp */
         
-      
+        
+       
     
 
     /**
      * This method cannot be called directly.
      */
+          
+          
     @Override
     public void keyReleased(KeyEvent e) {
     	
         if(Flag == 'D'){
-        Maze1.mazeprogramDown();
-       // System.out.println("The server count is"+ Maze1.countvalue());
-    	    	
+             
+    	Maze.mazeprogramDown();    
+    	//System.out.println("The client count is"+ Maze.countvalue());
+    	
     	}
         else if(Flag == 'U'){
-        	Maze1.mazeprogramUp();
-     //   System.out.println("The server count is"+ Maze1.countvalue());
-        
+        	Maze.mazeprogramUp();
+     //   System.out.println("The client count is"+ Maze.countvalue());
         	}
         else if(Flag =='R'){
-        	Maze1.mazeprogramRight();
-    //  System.out.println("The server count is"+ Maze1.countvalue());	
+        	Maze.mazeprogramRight();
+     //   System.out.println("The client count is"+ Maze.countvalue());	
         }
         else if(Flag == 'L'){
-        	Maze1.mazeprogramLeft();
-    //    System.out.println("The player count is"+ Maze1.countvalue());	
+        	Maze.mazeprogramLeft();
+     //   System.out.println("The client count is"+ Maze.countvalue());	
         }
     	
         
@@ -1980,26 +1975,9 @@ public static  int [][]position = new int [7][7];
         }// end syn
     } // end key pressed
     
-    
-    public static void setposition (int a, int b) {
-    	 position[a][b] = position[a][b];
-    }
-    
-    public static int[][] returnpostion(){
-    	return position;
-    }
-   
-    public static boolean changeb(boolean x) {
-   	 if(x){
-   		 x =false;
-   		 return x;
-   	 }
-   	 else{
-   		 x =true;
-   		 return x;
-   	 }
-   }
   
+    
+   
 }
 
 
